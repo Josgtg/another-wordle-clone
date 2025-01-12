@@ -10,6 +10,8 @@ pub struct Feedback {
     chars: Vec<Char>,
     /// Used to print the colorized word
     feedback_word: Vec<ColoredString>,
+    /// Contains all the words guessed
+    feedback_history: Vec<String>,
     /// Contains the abecedary with its chars colored to show its status
     abecedary: HashMap<char, ColoredString>,
     colored_in_abc: HashSet<char>,
@@ -27,6 +29,7 @@ impl Feedback {
             secret: secret_word.iter().copied().map(Char::new).collect(),
             chars: Vec::new(),
             feedback_word: Vec::new(),
+            feedback_history: Vec::new(),
             abecedary: abc,
             colored_in_abc: HashSet::new(),
             win: false,
@@ -42,6 +45,7 @@ impl Feedback {
         self.mark_correct();
         self.mark_misplaced();
         self.mark_incorrect();
+        self.feedback_history.push(self.to_string());
     }
 
     fn mark_correct(&mut self) {
@@ -138,6 +142,8 @@ impl Feedback {
             .insert(c, function(self.abecedary.get(&c).unwrap()));
     }
 
+    // Getters
+
     pub fn get_abecedary(&self) -> String {
         let mut s = String::new();
         let mut vec: Vec<(&char, &ColoredString)> = self.abecedary.iter().collect();
@@ -146,6 +152,10 @@ impl Feedback {
             s = format!("{} {}", s, i.1);
         }
         s
+    }
+
+    pub fn get_history(&self) -> &Vec<String> {
+        &self.feedback_history
     }
 }
 

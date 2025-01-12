@@ -39,6 +39,7 @@ pub struct LanguagePack<'a> {
     pub prompt_guess_title: &'a str,
     pub prompt_language_title: &'a str,
     pub prompt_play_again: &'a str,
+    pub no_word_guessed: &'a str,
 }
 
 impl LanguagePack<'static> {
@@ -55,6 +56,7 @@ impl LanguagePack<'static> {
             prompt_guess_title: PROMPT_GUESS_TITLE_EN,
             prompt_language_title: PROMPT_LANGUAGE_TITLE_EN,
             prompt_play_again: PROMPT_PLAY_AGAIN_EN,
+            no_word_guessed: NO_WORD_GUESSED_EN,
         }
     }
 
@@ -71,6 +73,7 @@ impl LanguagePack<'static> {
             prompt_guess_title: PROMPT_GUESS_TITLE_ES,
             prompt_language_title: PROMPT_LANGUAGE_TITLE_ES,
             prompt_play_again: PROMPT_PLAY_AGAIN_ES,
+            no_word_guessed: NO_WORD_GUESSED_ES,
         }
     }
 }
@@ -94,12 +97,14 @@ Puedes escribir \"h\" cuando estés ingresando una palabra para consultar comand
 
 const COMMANDS_EN: &str = "\
 w: Show previous guessed word
+l: Show all the words guessed at that point
 a: Show all possible letters, like printing the abecedary, with revealed hints
 t: Show how many tries are left
 h: Show available commands
 q: Quits the game";
 const COMMANDS_ES: &str = "\
 w: Muestra la palabra ingresada anteriormente
+l: Muestra todas las palabras ingresadas hasta ese punto
 a: Muestra todas las letras disponibles, como el abecedario, con las pistas reveladas
 t: Muestra los intentos restantes
 h: Muestra los comandos disponibles
@@ -131,3 +136,6 @@ const PROMPT_LANGUAGE_TITLE_ES: &str = "Selecciona idioma:";
 
 const PROMPT_PLAY_AGAIN_EN: &str = "Play again?";
 const PROMPT_PLAY_AGAIN_ES: &str = "¿Quires jugar otra vez?";
+
+const NO_WORD_GUESSED_EN: &str = "No word has been guessed yet";
+const NO_WORD_GUESSED_ES: &str = "No se ha ingresado ninguna palabra todavía";
