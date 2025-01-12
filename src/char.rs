@@ -1,11 +1,11 @@
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CharStatus {
     Correct,
     Misplaced,
     Incorrect,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Char {
     pub chr: char,
     pub status: CharStatus,
@@ -20,7 +20,7 @@ impl Char {
     }
 
     pub fn has_status(&self) -> bool {
-        std::mem::discriminant(&self.status) != std::mem::discriminant(&CharStatus::Incorrect)
+        self.status != CharStatus::Incorrect
     }
 
     pub fn set_correct(&mut self) {

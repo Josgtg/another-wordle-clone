@@ -57,7 +57,7 @@ impl Feedback {
 
     fn mark_misplaced(&mut self) {
         for i in 0..self.chars.len() {
-            if self.chars[i].has_status() {
+            if self.chars[i].has_status() {  // Checks if it's already correct
                 continue;
             }
             for j in 0..self.secret.len() {
@@ -68,6 +68,7 @@ impl Feedback {
                     self.chars[i].set_misplaced();
                     self.secret[j].set_misplaced();
                     self.color_misplaced(i, self.chars[i].chr);
+                    break;
                 }
             }
         }
