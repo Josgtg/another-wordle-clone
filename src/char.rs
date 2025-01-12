@@ -35,3 +35,43 @@ impl Char {
         self.status = CharStatus::Incorrect
     }
 }
+
+pub fn contains_utf8_only(s: &str) -> bool {
+    s.contains('á')
+        || s.contains('é')
+        || s.contains('í')
+        || s.contains('ó')
+        || s.contains('ú')
+        || s.contains('ü')
+}
+
+pub fn asciify(c: char) -> char {
+    match c {
+        'á' => 'a',
+        'é' => 'e',
+        'í' => 'i',
+        'ó' => 'o',
+        'ú' | 'ü' => 'u',
+        default => default,
+    }
+}
+
+pub fn asciify_str(s: &str) -> String {
+    let mut new = String::new();
+    for c in s.chars() {
+        new.push(match c {
+            'á' => 'a',
+            'é' => 'e',
+            'í' => 'i',
+            'ó' => 'o',
+            'ú' | 'ü' => 'u',
+            default => default,
+        });
+    }
+    new
+}
+
+/// Checks if a is similar to b
+pub fn compare_chars(a: char, b: char) -> bool {
+    a == asciify(b) || a == b
+}

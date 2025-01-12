@@ -21,8 +21,10 @@ fn main() {
     let bytes_en = include_bytes!("../media/dictionary.txt").to_vec();
     let bytes_es = include_bytes!("../media/diccionario.txt").to_vec();
 
-    let (words_en, abecedary_en) = dictionary::get_words(&bytes_en);
-    let (words_es, abecedary_es) = dictionary::get_words(&bytes_es);
+    let (secret_en, words_en, abecedary_en) = dictionary::get_words(&bytes_en);
+    let (secret_es, words_es, abecedary_es) = dictionary::get_words(&bytes_es);
+    let mut words_for_secret: &HashSet<String> = &secret_en;
+    // Some words are misspelled in this set to improve playability, it's for spanish words with symbols
     let mut words: &HashSet<String> = &words_en;
     let mut abecedary: &HashSet<char> = &abecedary_en;
 
@@ -31,9 +33,13 @@ fn main() {
     loop {
         new_language = prompt::ask_language(lang);
         if new_language != current_language {
-            (words, abecedary, lang) = match new_language {
-                language::Language::English => (&words_en, &abecedary_en, &lang_pack_en),
-                language::Language::Spanish => (&words_es, &abecedary_es, &lang_pack_es),
+            (words_for_secret, words, abecedary, lang) = match new_language {
+                language::Language::English => {
+                    (&secret_en, &words_en, &abecedary_en, &lang_pack_en)
+                }
+                language::Language::Spanish => {
+                    (&secret_es, &words_es, &abecedary_es, &lang_pack_es)
+                }
             };
             current_language = new_language;
         }
@@ -43,7 +49,7 @@ fn main() {
             first_time = false;
         }
 
-        secret_word = dictionary::select_secret_word(words);
+        secret_word = dictionary::get_secret_word(words_for_secret);
         game::start(words, &secret_word, abecedary, lang);
 
         if !prompt::play_again(lang) {

@@ -77,7 +77,8 @@ pub fn start(
                 println!("{}\n", lang.commands);
                 continue 'outer;
             }
-            _ => ()
+            // TODO: Add an option to print the whole history of words
+            _ => (),
         };
 
         if !validate(&guess, words, abecedary, lang) {
@@ -85,9 +86,19 @@ pub fn start(
         }
 
         feedback.compare(guess);
-        print_feedback(&feedback);
 
         if feedback.win {
+            println!(
+                "\n{}\n",
+                feedback
+                    .get_secret()
+                    .to_uppercase()
+                    .chars()
+                    .fold(String::new(), |mut s, c| { s.push(' '); s.push(c); s } )
+                    .as_str()
+                    .green()
+                    .bold()
+            );
             println!("{}\n", lang.win.bold());
             return;
         } else if tries == MAX_TRIES - 1 {
@@ -98,6 +109,8 @@ pub fn start(
             );
             return;
         }
+
+        print_feedback(&feedback);
 
         tries += 1;
         print_tries_left(lang, tries, MAX_TRIES);

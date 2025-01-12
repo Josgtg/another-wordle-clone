@@ -12,6 +12,7 @@ pub struct Feedback {
     feedback_word: Vec<ColoredString>,
     /// Contains the abecedary with its chars colored to show its status
     abecedary: HashMap<char, ColoredString>,
+    colored_in_abc: HashSet<char>,
     /// True if the guess is correct
     pub win: bool,
 }
@@ -27,6 +28,7 @@ impl Feedback {
             chars: Vec::new(),
             feedback_word: Vec::new(),
             abecedary: abc,
+            colored_in_abc: HashSet::new(),
             win: false,
         }
     }
@@ -45,10 +47,15 @@ impl Feedback {
     fn mark_correct(&mut self) {
         self.win = true;
         for i in 0..self.chars.len() {
-            if self.chars[i].chr == self.secret[i].chr {
+            if compare_chars(self.chars[i].chr, self.secret[i].chr) {
                 self.chars[i].set_correct();
                 self.secret[i].set_correct();
-                self.color_correct(i, self.chars[i].chr);
+                if self.chars[i].chr != self.secret[i].chr {
+                    // Marking correct the "Á" when user input had an "A" but the secret word an "Á"
+                    self.color_correct(i, self.secret[i].chr);
+                } else {
+                    self.color_correct(i, self.chars[i].chr);
+                }
                 continue;
             }
             self.win = false;
@@ -57,17 +64,22 @@ impl Feedback {
 
     fn mark_misplaced(&mut self) {
         for i in 0..self.chars.len() {
-            if self.chars[i].has_status() {  // Checks if it's already correct
+            if self.chars[i].has_status() {
+                // Checks if it's already correct
                 continue;
             }
             for j in 0..self.secret.len() {
                 if self.secret[j].has_status() {
                     continue;
                 }
-                if self.chars[i].chr == self.secret[j].chr {
+                if compare_chars(self.chars[i].chr, self.secret[j].chr) {
                     self.chars[i].set_misplaced();
                     self.secret[j].set_misplaced();
-                    self.color_misplaced(i, self.chars[i].chr);
+                    if self.chars[i].chr != self.secret[j].chr {
+                        self.color_misplaced(i, self.secret[i].chr);
+                    } else {
+                        self.color_misplaced(i, self.chars[i].chr);
+                    }
                     break;
                 }
             }
@@ -119,6 +131,9 @@ impl Feedback {
     }
 
     fn colorize_abecedary(&mut self, c: char, function: fn(&str) -> ColoredString) {
+        if !self.colored_in_abc.insert(c) {
+            return;
+        }
         self.abecedary
             .insert(c, function(self.abecedary.get(&c).unwrap()));
     }

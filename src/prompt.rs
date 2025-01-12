@@ -33,10 +33,8 @@ fn listbox(lang: &LanguagePack) -> Prompt<preset::listbox::render::Renderer> {
 }
 
 pub fn ask_language(lang: &LanguagePack) -> Language {
-    let lang = Language::try_from(listbox(lang)
-        .run()
-        .expect("error reading user input")
-    ).expect("language is not valid");
+    let lang = Language::try_from(listbox(lang).run().expect("error reading user input"))
+        .expect("language is not valid");
     println!();
     lang
 }
