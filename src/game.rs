@@ -48,7 +48,7 @@ pub fn start(
     abecedary: &HashSet<char>,
     lang: &LanguagePack,
 ) {
-    const MAX_TRIES: u8 = 5;
+    const MAX_TRIES: u8 = 6;
     let mut guess: String;
     let mut feedback = Feedback::new(secret_word, abecedary);
 
@@ -102,6 +102,7 @@ pub fn start(
             println!("{}\n", lang.win.bold());
             return;
         } else if tries == MAX_TRIES - 1 {
+            print_feedback(&feedback);
             println!(
                 "{}: \"{}\"\n",
                 lang.loss.bold(),
