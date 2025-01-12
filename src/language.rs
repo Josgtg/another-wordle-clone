@@ -83,15 +83,14 @@ When you write a word, the letters of the word will be shown in different colors
 \x1b[92mGreen\x1b[0m: The letter is in the secret word in that position
 \x1b[93mYellow\x1b[0m: The letter is in the secret word, but in another position
 \x1b[91mRed\x1b[0m: The letter is not in the secret word\n
-You can enter \"h\" when writing a word to see helpful commands\n";
+You can enter \"h\" when writing a word to see useful commands\n";
 const WELCOME_ES: &str = "\
 Este es un juego en el que tienes que adivinar una palabra secreta de 5 letras. Si no conoces las reglas, son las siguientes:\n
 Cuando escribas una palabra, sus letras serán mostradas en diferentes colores. Los colores significan lo siguiente:
 \x1b[92mVerde\x1b[0m: La letra está en la palabra secreta en esa posición
 \x1b[93mAmarillo\x1b[0m: La letra está en la palabra secreta, pero en otra posición
 \x1b[91mRojo\x1b[0m: La letra no está en la palabra secreta\n
-Puedes escribir \"h\" cuando estés ingresando una palabra para consultar comandos útiles
-El modo en español es un poco más complicado puesto que existen las tildes y escribr, por ejemplo, \"arbol\" sin tilde en la \"a\" no será válido\n";
+Puedes escribir \"h\" cuando estés ingresando una palabra para consultar comandos útiles\n";
 
 const COMMANDS_EN: &str = "\
 w: Show previous guessed word
