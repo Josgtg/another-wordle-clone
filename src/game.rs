@@ -92,8 +92,8 @@ pub fn start(
                 if history.is_empty() {
                     println!("{}\n", lang.no_word_guessed.bold());
                 } else {
+                    history.iter().for_each(|s| println!("{}", s.bold()));
                     println!();
-                    history.iter().for_each(|s| println!("{}\n", s));
                 }
                 continue 'outer;
             }
