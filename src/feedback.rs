@@ -1,43 +1,35 @@
-use crate::char::*;
-
-use colored::{ColoredString, Colorize};
-use std::collections::{HashMap, HashSet};
+use crate::char::{*, CharStatus::*};
+use crate::ascii::compare_chars;
+use std::collections::{HashSet, HashMap};
 
 pub struct Feedback {
-    /// Contains the characters of the secret word as well as its status in each comparison
+    /// Contains the characters of the secret word
     secret: Vec<Char>,
-    /// Contains the characters of the guess as well as its status in each comparison
-    chars: Vec<Char>,
-    /// Used to print the colorized word
-    feedback_word: Vec<ColoredString>,
+    /// Contains the characters of the guess
+    guess: Vec<Char>,
     /// Contains all the words guessed
     feedback_history: Vec<String>,
     /// Contains the abecedary with its chars colored to show its status
-    abecedary: HashMap<char, ColoredString>,
-    colored_in_abc: HashSet<char>,
+    abecedary: HashMap<char, Char>,
     /// True if the guess is correct
     pub win: bool,
 }
 
 impl Feedback {
     pub fn new(secret_word: &[char], abecedary: &HashSet<char>) -> Self {
-        let mut abc: HashMap<char, ColoredString> = HashMap::new();
-        for c in abecedary.iter() {
-            abc.insert(*c, ColoredString::from(c.to_uppercase().to_string()));
-        }
         Self {
             secret: secret_word.iter().copied().map(Char::new).collect(),
-            chars: Vec::new(),
-            feedback_word: Vec::new(),
+            guess: Vec::new(),
             feedback_history: Vec::new(),
-            abecedary: abc,
-            colored_in_abc: HashSet::new(),
+            abecedary: abecedary.iter().map(|c| (*c, Char::new(*c))).collect(),
             win: false,
         }
     }
 
-    pub fn get_secret(&self) -> String {
-        self.secret.clone().into_iter().map(|x| x.character).collect()
+    fn reset(&mut self, new: String) {
+        self.secret.iter_mut().for_each(|c| c.status = Incorrect);
+        self.guess = new.chars().map(Char::new).collect();
+        self.win = true;
     }
 
     pub fn compare(&mut self, guess: String) {
@@ -45,20 +37,25 @@ impl Feedback {
         self.mark_correct();
         self.mark_misplaced();
         self.mark_incorrect();
-        self.feedback_history.push(self.to_string());
+        self.feedback_history.push(self.get_feedback());
+    }
+
+    fn color_abecedary(&mut self, letter: char, color: CharStatus) {
+        self.abecedary.get_mut(&letter).unwrap().set_status(color);
     }
 
     fn mark_correct(&mut self) {
         self.win = true;
-        for i in 0..self.chars.len() {
-            if compare_chars(self.chars[i].character, self.secret[i].character) {
-                self.chars[i].set_correct();
-                self.secret[i].set_correct();
-                if self.chars[i].character != self.secret[i].character {
-                    // Marking correct the "Á" when user input had an "A" but the secret word an "Á"
-                    self.color_correct(i, self.secret[i].character);
+        for i in 0..self.guess.len() {
+            if compare_chars(self.guess[i].character, self.secret[i].character) {
+                self.guess[i].set_status(Correct);
+                self.secret[i].set_status(Correct);
+                if self.guess[i].character != self.secret[i].character {
+                    // If this is true, it means the actual letter was the one in the secret word
+                    // In guess: "a" - In secret: "á", so "á" must be set as correct, not "a"
+                    self.color_abecedary(self.secret[i].character, Correct);
                 } else {
-                    self.color_correct(i, self.chars[i].character);
+                    self.color_abecedary(self.guess[i].character, Correct);
                 }
                 continue;
             }
@@ -67,104 +64,54 @@ impl Feedback {
     }
 
     fn mark_misplaced(&mut self) {
-        for i in 0..self.chars.len() {
-            if self.chars[i].has_status() {
-                // Checks if it's already correct
+        for i in 0..self.guess.len() {
+            if !self.guess[i].is_incorrect() {
+                // Checks if it's already correct or misplaced
                 continue;
             }
             for j in 0..self.secret.len() {
-                if self.secret[j].has_status() {
+                if !self.secret[j].is_incorrect() {
                     continue;
                 }
-                if compare_chars(self.chars[i].character, self.secret[j].character) {
-                    self.chars[i].set_misplaced();
-                    self.secret[j].set_misplaced();
-                    if self.chars[i].character != self.secret[j].character {
-                        self.color_misplaced(i, self.secret[i].character);
+                if compare_chars(self.guess[i].character, self.secret[j].character) {
+                    self.guess[i].set_status(Misplaced);
+                    self.secret[j].set_status(Misplaced);
+                    if self.guess[i].character != self.secret[j].character {
+                        self.color_abecedary(self.secret[j].character, Misplaced);
                     } else {
-                        self.color_misplaced(i, self.chars[i].character);
+                        self.color_abecedary(self.guess[i].character, Misplaced);
                     }
-                    break;
+                    break;  // Must break to avoid marking all instances of self.guess[i] in secret word as misplaced
                 }
             }
         }
     }
 
     fn mark_incorrect(&mut self) {
-        for i in 0..self.chars.len() {
-            if !self.chars[i].has_status() {
-                self.color_incorrect(i, self.chars[i].character);
+        for i in 0..self.guess.len() {
+            if self.guess[i].is_incorrect() {
+                self.guess[i].set_status(Incorrect);
             }
         }
     }
 
-    fn reset(&mut self, new: String) {
-        for c in self.secret.iter_mut() {
-            c.set_incorrect();
-        }
-        self.win = true;
-        self.chars = new.clone().chars().map(Char::new).collect();
-        self.feedback_word = new
-            .chars()
-            .map(|x| ColoredString::from(x.to_uppercase().to_string()))
-            .collect();
-    }
-
-    // Colorizing
-
-    fn color_correct(&mut self, index: usize, char_in_abecedary: char) {
-        self.colorize(index, char_in_abecedary, |x| x.bright_green())
-    }
-
-    fn color_misplaced(&mut self, index: usize, char_in_abecedary: char) {
-        self.colorize(index, char_in_abecedary, |x| x.bright_yellow())
-    }
-
-    fn color_incorrect(&mut self, index: usize, char_in_abecedary: char) {
-        self.colorize(index, char_in_abecedary, |x| x.red())
-    }
-
-    fn colorize(
-        &mut self,
-        index: usize,
-        char_in_abecedary: char,
-        function: fn(&str) -> ColoredString,
-    ) {
-        self.colorize_abecedary(char_in_abecedary, function);
-        self.feedback_word[index] = function(&self.feedback_word[index]);
-    }
-
-    fn colorize_abecedary(&mut self, c: char, function: fn(&str) -> ColoredString) {
-        if !self.colored_in_abc.insert(c) {
-            return;
-        }
-        self.abecedary
-            .insert(c, function(self.abecedary.get(&c).unwrap()));
-    }
-
     // Getters
 
+    pub fn get_secret(&self) -> String {
+        self.secret.iter().fold(String::new(), |s, c| format!("{}{}", s, c.character))
+    }
+
+    pub fn get_feedback(&self) -> String {
+        self.guess.iter().fold(String::new(), |s, c| format!("{} {}", s, c.colored))
+    }
+
     pub fn get_abecedary(&self) -> String {
-        let mut s = String::new();
-        let mut vec: Vec<(&char, &ColoredString)> = self.abecedary.iter().collect();
-        vec.sort_by(|a, b| a.0.cmp(b.0));
-        for i in vec {
-            s = format!("{} {}", s, i.1);
-        }
-        s
+        let mut abecedary_vec: Vec<Char> = self.abecedary.clone().into_iter().map(|x| x.1).collect();
+        abecedary_vec.sort();
+        abecedary_vec.into_iter().fold(String::new(),|s, c| format!("{} {}", s, c.colored))
     }
 
     pub fn get_history(&self) -> &Vec<String> {
         &self.feedback_history
-    }
-}
-
-impl std::fmt::Display for Feedback {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut s = String::new();
-        for i in self.feedback_word.iter() {
-            s = format!("{} {}", s, i);
-        }
-        f.write_str(&s)
     }
 }

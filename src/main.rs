@@ -9,6 +9,7 @@ mod feedback;
 mod game;
 mod language;
 mod prompt;
+mod ascii;
 
 fn main() {
     let mut current_language = Language::English;

@@ -31,7 +31,7 @@ fn validate(
 }
 
 fn print_feedback(feedback: &Feedback, lang: &LanguagePack) {
-    let word = feedback.to_string().as_str().bold();
+    let word = feedback.get_feedback().as_str().bold();
     if word.trim().is_empty() {
         println!("{}\n", lang.no_word_guessed.bold());
         return;

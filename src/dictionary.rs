@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use rand::Rng;
 
-use crate::char::{asciify_str, contains_utf8_only};
+use crate::ascii::{asciify_str, has_non_ascii};
 
 /// Reads text, extracts all the words and transforms it in three things:
 /// A set with some misspelled words for gameplay, a set with correct words to choose secret word from, and the abecedary or all valid chars
@@ -20,7 +20,7 @@ pub fn get_words(bytes: Vec<u8>) -> (HashSet<String>, HashSet<String>, HashSet<c
         for c in s.to_lowercase().chars() {
             abecedary.insert(c); 
         }
-        if contains_utf8_only(s) {
+        if has_non_ascii(s) {
             set_misspelled.insert(asciify_str(s));
         }
         set_correct.insert(s.to_owned());

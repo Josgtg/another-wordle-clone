@@ -1,4 +1,6 @@
-use colored::ColoredString;
+use std::hash::Hash;
+
+use colored::{ColoredString, Colorize};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CharStatus {
@@ -18,56 +20,40 @@ impl Char {
     pub fn new(c: char) -> Self {
         Self {
             character: c,
-            colored: ColoredString::from(c.to_string()),
+            colored: ColoredString::from(c.to_uppercase().to_string()),
             status: CharStatus::Incorrect,
         }
     }
 
-    /// Returns true if the status is not incorrect
-    pub fn has_status(&self) -> bool {
-        self.status != CharStatus::Incorrect
+    pub fn is_incorrect(&self) -> bool {
+        self.status == CharStatus::Incorrect
     }
 
-    pub fn set_correct(&mut self) {
-        self.status = CharStatus::Correct
-    }
-
-    pub fn set_misplaced(&mut self) {
-        self.status = CharStatus::Misplaced
-    }
-
-    pub fn set_incorrect(&mut self) {
-        self.status = CharStatus::Incorrect
+    /// Sets status given and colors the char to the corresponding color
+    pub fn set_status(&mut self, status: CharStatus) {
+        self.colored.clear_style();
+        self.colored = match &status {
+            CharStatus::Correct => self.colored.clone().bright_green(),
+            CharStatus::Misplaced => self.colored.clone().bright_yellow(),
+            CharStatus::Incorrect => self.colored.clone().bright_red()
+        };
+        self.status = status;
     }
 }
 
-pub fn contains_utf8_only(s: &str) -> bool {
-    s.contains('á')
-        || s.contains('é')
-        || s.contains('í')
-        || s.contains('ó')
-        || s.contains('ú')
-        || s.contains('ü')
-}
-
-pub fn asciify(c: char) -> char {
-    match c {
-        'á' => 'a',
-        'é' => 'e',
-        'í' => 'i',
-        'ó' => 'o',
-        'ú' | 'ü' => 'u',
-        default => default,
+impl Hash for Char {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.character.hash(state);
     }
 }
 
-pub fn asciify_str(s: &str) -> String {
-    let mut ascii = String::new();
-    s.chars().for_each(|c| ascii.push(asciify(c)));
-    ascii
+impl PartialOrd for Char {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.character.partial_cmp(&other.character)
+    }
 }
-
-/// Checks if a is similar to b
-pub fn compare_chars(a: char, b: char) -> bool {
-    a == asciify(b) || a == b
+impl Ord for Char {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.character.cmp(&other.character)
+    }
 }
