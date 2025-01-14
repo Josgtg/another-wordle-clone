@@ -37,7 +37,7 @@ impl Feedback {
     }
 
     pub fn get_secret(&self) -> String {
-        self.secret.clone().into_iter().map(|x| x.chr).collect()
+        self.secret.clone().into_iter().map(|x| x.character).collect()
     }
 
     pub fn compare(&mut self, guess: String) {
@@ -51,14 +51,14 @@ impl Feedback {
     fn mark_correct(&mut self) {
         self.win = true;
         for i in 0..self.chars.len() {
-            if compare_chars(self.chars[i].chr, self.secret[i].chr) {
+            if compare_chars(self.chars[i].character, self.secret[i].character) {
                 self.chars[i].set_correct();
                 self.secret[i].set_correct();
-                if self.chars[i].chr != self.secret[i].chr {
+                if self.chars[i].character != self.secret[i].character {
                     // Marking correct the "Á" when user input had an "A" but the secret word an "Á"
-                    self.color_correct(i, self.secret[i].chr);
+                    self.color_correct(i, self.secret[i].character);
                 } else {
-                    self.color_correct(i, self.chars[i].chr);
+                    self.color_correct(i, self.chars[i].character);
                 }
                 continue;
             }
@@ -76,13 +76,13 @@ impl Feedback {
                 if self.secret[j].has_status() {
                     continue;
                 }
-                if compare_chars(self.chars[i].chr, self.secret[j].chr) {
+                if compare_chars(self.chars[i].character, self.secret[j].character) {
                     self.chars[i].set_misplaced();
                     self.secret[j].set_misplaced();
-                    if self.chars[i].chr != self.secret[j].chr {
-                        self.color_misplaced(i, self.secret[i].chr);
+                    if self.chars[i].character != self.secret[j].character {
+                        self.color_misplaced(i, self.secret[i].character);
                     } else {
-                        self.color_misplaced(i, self.chars[i].chr);
+                        self.color_misplaced(i, self.chars[i].character);
                     }
                     break;
                 }
@@ -93,7 +93,7 @@ impl Feedback {
     fn mark_incorrect(&mut self) {
         for i in 0..self.chars.len() {
             if !self.chars[i].has_status() {
-                self.color_incorrect(i, self.chars[i].chr);
+                self.color_incorrect(i, self.chars[i].character);
             }
         }
     }

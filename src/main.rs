@@ -20,12 +20,13 @@ fn main() {
 
     let bytes_en = include_bytes!("../media/dictionary.txt").to_vec();
     let bytes_es = include_bytes!("../media/diccionario.txt").to_vec();
-
-    let (secret_en, words_en, abecedary_en) = dictionary::get_words(&bytes_en);
-    let (secret_es, words_es, abecedary_es) = dictionary::get_words(&bytes_es);
+    let (secret_en, words_en, abecedary_en) = dictionary::get_words(bytes_en);
+    let (secret_es, words_es, abecedary_es) = dictionary::get_words(bytes_es);
+    // The words in this set are all correct, it would not be reasonable to choose a misspelled word as the secret one
     let mut words_for_secret: &HashSet<String> = &secret_en;
     // Some words are misspelled in this set to improve playability, it's for spanish words with symbols
     let mut words: &HashSet<String> = &words_en;
+    // Al valid characters are in this set
     let mut abecedary: &HashSet<char> = &abecedary_en;
 
     let mut secret_word: Vec<char>;

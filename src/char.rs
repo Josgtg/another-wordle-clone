@@ -1,3 +1,5 @@
+use colored::ColoredString;
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CharStatus {
     Correct,
@@ -7,18 +9,21 @@ pub enum CharStatus {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Char {
-    pub chr: char,
+    pub character: char,
+    pub colored: ColoredString,
     pub status: CharStatus,
 }
 
 impl Char {
     pub fn new(c: char) -> Self {
         Self {
-            chr: c,
+            character: c,
+            colored: ColoredString::from(c.to_string()),
             status: CharStatus::Incorrect,
         }
     }
 
+    /// Returns true if the status is not incorrect
     pub fn has_status(&self) -> bool {
         self.status != CharStatus::Incorrect
     }
@@ -57,18 +62,9 @@ pub fn asciify(c: char) -> char {
 }
 
 pub fn asciify_str(s: &str) -> String {
-    let mut new = String::new();
-    for c in s.chars() {
-        new.push(match c {
-            'á' => 'a',
-            'é' => 'e',
-            'í' => 'i',
-            'ó' => 'o',
-            'ú' | 'ü' => 'u',
-            default => default,
-        });
-    }
-    new
+    let mut ascii = String::new();
+    s.chars().for_each(|c| ascii.push(asciify(c)));
+    ascii
 }
 
 /// Checks if a is similar to b
