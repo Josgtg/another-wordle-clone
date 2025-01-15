@@ -93,7 +93,7 @@ When you write a word, the letters of the word will be shown in different colors
 \x1b[92mGreen\x1b[0m: The letter is in the secret word in that position
 \x1b[93mYellow\x1b[0m: The letter is in the secret word, but in another position
 \x1b[91mRed\x1b[0m: The letter is not in the secret word\n
-You can run the program with the -h option to get help on some configurations.
+You can run the program with the \"-h\" option to get help on some configurations
 You can enter \"h\" when writing a word to see useful commands\n";
 const WELCOME_ES: &str = "\
 Este es un juego en el que tienes que adivinar una palabra secreta de 5 letras. Si no conoces las reglas, son las siguientes:\n
@@ -101,7 +101,7 @@ Cuando escribas una palabra, sus letras serán mostradas en diferentes colores. 
 \x1b[92mVerde\x1b[0m: La letra está en la palabra secreta en esa posición
 \x1b[93mAmarillo\x1b[0m: La letra está en la palabra secreta, pero en otra posición
 \x1b[91mRojo\x1b[0m: La letra no está en la palabra secreta\n
-Puedes ejecutar el programa con la opción -h para obtener ayuda en algunas configuraciones.
+Puedes ejecutar el programa con la opción \"-h\" para obtener ayuda en algunas configuraciones
 Puedes escribir \"h\" cuando estés ingresando una palabra para consultar comandos útiles\n";
 
 const COMMANDS_EN: &str = "\
