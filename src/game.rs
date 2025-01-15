@@ -1,10 +1,13 @@
-use crate::errors::error;
 use crate::feedback::Feedback;
 use crate::language::LanguagePack;
 use crate::prompt::*;
 
 use colored::Colorize;
 use std::collections::HashSet;
+
+fn error(message: &str) {
+    println!("{}\n", message.red().bold())
+}
 
 fn validate(
     guess: &str,
