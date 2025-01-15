@@ -4,7 +4,6 @@ mod args;
 mod ascii;
 mod char;
 mod dictionary;
-mod errors;
 mod feedback;
 mod game;
 mod language;
