@@ -1,6 +1,7 @@
 use clap::Parser;
 
 mod args;
+mod ascii;
 mod char;
 mod dictionary;
 mod errors;
@@ -8,15 +9,34 @@ mod feedback;
 mod game;
 mod language;
 mod prompt;
-mod ascii;
 
-use language::{Language, LanguagePack};
 use dictionary::Dictionary;
+use language::{Language, LanguagePack};
 
 fn get_language_appropriate<T>(language: &Language, english: T, spanish: T) -> T {
     match language {
         Language::English => english,
-        Language::Spanish => spanish
+        Language::Spanish => spanish,
+    }
+}
+
+fn change_language(language: &Language) -> (LanguagePack, Dictionary) {
+    (
+        get_language_appropriate(&language, LanguagePack::english(), LanguagePack::spanish()),
+        get_language_appropriate(
+            &language,
+            Dictionary::new(include_bytes!("../media/dictionary.txt").to_vec()),
+            Dictionary::new(include_bytes!("../media/diccionario.txt").to_vec()),
+        ),
+    )
+}
+
+fn first_time_secret(args_secret: Option<Vec<char>>, dictionary: &mut Dictionary) -> Vec<char> {
+    if let Some(secret) = args_secret {
+        dictionary.words.insert(secret.iter().collect());
+        secret
+    } else {
+        dictionary.get_secret_word()
     }
 }
 
@@ -24,48 +44,33 @@ fn main() {
     let args = args::Args::parse();
 
     let mut language = args.get_language();
+    let (mut language_pack, mut dictionary) = change_language(&language);
 
-    let mut language_pack: LanguagePack = get_language_appropriate(
-        &language,
-        LanguagePack::english(),
-        LanguagePack::spanish()
-    );
-
-    let mut dictionary: Dictionary = get_language_appropriate(
-        &language,
-        Dictionary::new(include_bytes!("../media/dictionary.txt").to_vec()),
-        Dictionary::new(include_bytes!("../media/diccionario.txt").to_vec())
-    );
-    
+    let mut secret_word: Vec<char>;
     let mut first_time = true;
     loop {
-        if first_time {
+        secret_word = if first_time {
             println!("{}", language_pack.welcome);
             first_time = false;
-            if let Some(secret) = args.get_secret(&dictionary.abecedary) {
-                dictionary.words.insert(secret.iter().collect());
-                game::start(&dictionary.words, &secret, &dictionary.abecedary, args.get_tries(), &language_pack);
-                continue;
-            }
-        }
-        
-        game::start(&dictionary.words, &dictionary.get_secret_word(), &dictionary.abecedary, args.get_tries(), &language_pack);
-        
+            first_time_secret(args.get_secret(&dictionary.abecedary), &mut dictionary)
+        } else {
+            dictionary.get_secret_word()
+        };
+
+        game::start(
+            &dictionary.words,
+            &secret_word,
+            &dictionary.abecedary,
+            args.get_tries(),
+            &language_pack,
+        );
+
         if !prompt::play_again(&language_pack) {
             return;
         }
         if prompt::ask_change_language(&language_pack) {
             language = prompt::change_language(&language_pack);
-            language_pack = get_language_appropriate(
-                &language,
-                LanguagePack::english(),
-                LanguagePack::spanish()
-            );
-            dictionary = get_language_appropriate(
-                &language,
-                Dictionary::new(include_bytes!("../media/dictionary.txt").to_vec()),
-                Dictionary::new(include_bytes!("../media/diccionario.txt").to_vec())
-            );
+            (language_pack, dictionary) = change_language(&language);
             first_time = true;
         }
         println!();

@@ -1,6 +1,6 @@
-use crate::char::{*, CharStatus::*};
 use crate::ascii::compare_chars;
-use std::collections::{HashSet, HashMap};
+use crate::char::{CharStatus::*, *};
+use std::collections::{HashMap, HashSet};
 
 pub struct Feedback {
     /// Contains the characters of the secret word
@@ -81,7 +81,7 @@ impl Feedback {
                     } else {
                         self.color_abecedary(self.guess[i].character, Misplaced);
                     }
-                    break;  // Must break to avoid marking all instances of self.guess[i] in secret word as misplaced
+                    break; // Must break to avoid marking all instances of self.guess[i] in secret word as misplaced
                 }
             }
         }
@@ -99,17 +99,24 @@ impl Feedback {
     // Getters
 
     pub fn get_secret(&self) -> String {
-        self.secret.iter().fold(String::new(), |s, c| format!("{}{}", s, c.character))
+        self.secret
+            .iter()
+            .fold(String::new(), |s, c| format!("{}{}", s, c.character))
     }
 
     pub fn get_feedback(&self) -> String {
-        self.guess.iter().fold(String::new(), |s, c| format!("{} {}", s, c.colored))
+        self.guess
+            .iter()
+            .fold(String::new(), |s, c| format!("{} {}", s, c.colored))
     }
 
     pub fn get_abecedary(&self) -> String {
-        let mut abecedary_vec: Vec<Char> = self.abecedary.clone().into_iter().map(|x| x.1).collect();
+        let mut abecedary_vec: Vec<Char> =
+            self.abecedary.clone().into_iter().map(|x| x.1).collect();
         abecedary_vec.sort();
-        abecedary_vec.into_iter().fold(String::new(),|s, c| format!("{} {}", s, c.colored))
+        abecedary_vec
+            .into_iter()
+            .fold(String::new(), |s, c| format!("{} {}", s, c.colored))
     }
 
     pub fn get_history(&self) -> &Vec<String> {

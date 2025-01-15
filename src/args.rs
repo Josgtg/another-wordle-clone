@@ -1,6 +1,6 @@
-use std::str::FromStr;
-use clap::Parser;
 use crate::language::Language;
+use clap::Parser;
+use std::str::FromStr;
 
 const DEFAULT_LANG: Language = Language::English;
 const DEFAULT_SECRET: Option<Vec<char>> = None;
@@ -9,14 +9,14 @@ const DEFAULT_TRIES: u8 = 5;
 #[derive(Debug, Parser)]
 pub struct Args {
     /// Change the default language | Cambia el idioma por defecto ("en", "es")
-    #[arg(short='l', long="language")]
+    #[arg(short = 'l', long = "language")]
     language: Option<String>,
     /// Set a secret word | Asigna una palabra secreta
-    #[arg(short='s', long="secret")]
+    #[arg(short = 's', long = "secret")]
     secret: Option<String>,
     /// Set max guesses | Asigna los intentos máximos
-    #[arg(short='t', long="tries")]
-    tries: Option<u8>
+    #[arg(short = 't', long = "tries")]
+    tries: Option<u8>,
 }
 
 impl Args {
@@ -30,8 +30,7 @@ impl Args {
     }
 
     pub fn get_secret(&self, abecedary: &std::collections::HashSet<char>) -> Option<Vec<char>> {
-        let secret_vec: Vec<char> =
-        if let Some(secret) = &self.secret {
+        let secret_vec: Vec<char> = if let Some(secret) = &self.secret {
             secret.chars().collect()
         } else {
             return DEFAULT_SECRET;

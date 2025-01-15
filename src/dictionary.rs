@@ -10,7 +10,7 @@ pub struct Dictionary {
     /// Some words are misspelled in this set to improve playability, it's for spanish words with symbols
     pub words: HashSet<String>,
     /// Al valid characters are in this set
-    pub abecedary: HashSet<char>
+    pub abecedary: HashSet<char>,
 }
 
 impl Dictionary {
@@ -28,7 +28,7 @@ impl Dictionary {
 
         for s in text.lines() {
             for c in s.to_lowercase().chars() {
-                abecedary.insert(c); 
+                abecedary.insert(c);
             }
             if has_non_ascii(s) {
                 set_misspelled.insert(asciify_str(s));
@@ -41,14 +41,14 @@ impl Dictionary {
         Self {
             words_correct: set_correct,
             words: set_misspelled,
-            abecedary
+            abecedary,
         }
     }
 
-    
     pub fn get_secret_word(&self) -> Vec<char> {
         let index: usize = rand::thread_rng().gen_range(0..self.words_correct.len());
-        let secret_word: Vec<char> = self.words_correct
+        let secret_word: Vec<char> = self
+            .words_correct
             .iter()
             .nth(index)
             .unwrap()

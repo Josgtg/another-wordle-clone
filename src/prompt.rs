@@ -53,18 +53,27 @@ pub fn read_input(lang: &LanguagePack) -> String {
 }
 
 pub fn change_language(lang: &LanguagePack) -> Language {
-    let lang = Language::from_str(listbox(lang.prompt_change_language).run().expect("error reading user input").as_str())
-        .expect("language is not valid");
+    let lang = Language::from_str(
+        listbox(lang.prompt_change_language)
+            .run()
+            .expect("error reading user input")
+            .as_str(),
+    )
+    .expect("language is not valid");
     println!();
     lang
 }
 
 pub fn ask_change_language(lang: &LanguagePack) -> bool {
-    let input = confirm(lang.prompt_ask_change_language).run().expect("error reading user input");
+    let input = confirm(lang.prompt_ask_change_language)
+        .run()
+        .expect("error reading user input");
     bool_from_str(input.as_str())
 }
 
 pub fn play_again(lang: &LanguagePack) -> bool {
-    let input = confirm(lang.prompt_play_again).run().expect("error reading user input");
+    let input = confirm(lang.prompt_play_again)
+        .run()
+        .expect("error reading user input");
     bool_from_str(input.as_str())
 }

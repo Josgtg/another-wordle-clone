@@ -35,7 +35,7 @@ impl Char {
         self.colored = match &status {
             CharStatus::Correct => self.colored.clone().bright_green(),
             CharStatus::Misplaced => self.colored.clone().bright_yellow(),
-            CharStatus::Incorrect => self.colored.clone().bright_red()
+            CharStatus::Incorrect => self.colored.clone().bright_red(),
         };
         self.status = status;
     }
