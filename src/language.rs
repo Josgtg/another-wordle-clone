@@ -39,7 +39,8 @@ pub struct LanguagePack<'a> {
     pub err_invalid_len: &'a str,
     pub err_invalid_word: &'a str,
     pub prompt_guess_title: &'a str,
-    pub prompt_language_title: &'a str,
+    pub prompt_ask_change_language: &'a str,
+    pub prompt_change_language: &'a str,
     pub prompt_play_again: &'a str,
     pub no_word_guessed: &'a str,
 }
@@ -56,7 +57,8 @@ impl LanguagePack<'static> {
             err_invalid_len: ERR_INVALID_LEN_EN,
             err_invalid_word: ERR_INVALID_WORD_EN,
             prompt_guess_title: PROMPT_GUESS_TITLE_EN,
-            prompt_language_title: PROMPT_LANGUAGE_TITLE_EN,
+            prompt_ask_change_language: PROMPT_ASK_CHANGE_LANGUAGE_EN,
+            prompt_change_language: PROMPT_LANGUAGE_TITLE_EN,
             prompt_play_again: PROMPT_PLAY_AGAIN_EN,
             no_word_guessed: NO_WORD_GUESSED_EN,
         }
@@ -73,7 +75,8 @@ impl LanguagePack<'static> {
             err_invalid_len: ERR_INVALID_LEN_ES,
             err_invalid_word: ERR_INVALID_WORD_ES,
             prompt_guess_title: PROMPT_GUESS_TITLE_ES,
-            prompt_language_title: PROMPT_LANGUAGE_TITLE_ES,
+            prompt_ask_change_language: PROMPT_ASK_CHANGE_LANGUAGE_ES,
+            prompt_change_language: PROMPT_LANGUAGE_TITLE_ES,
             prompt_play_again: PROMPT_PLAY_AGAIN_ES,
             no_word_guessed: NO_WORD_GUESSED_ES,
         }
@@ -90,6 +93,7 @@ When you write a word, the letters of the word will be shown in different colors
 \x1b[92mGreen\x1b[0m: The letter is in the secret word in that position
 \x1b[93mYellow\x1b[0m: The letter is in the secret word, but in another position
 \x1b[91mRed\x1b[0m: The letter is not in the secret word\n
+You can run the program with the -h option to get help on some configurations.
 You can enter \"h\" when writing a word to see useful commands\n";
 const WELCOME_ES: &str = "\
 Este es un juego en el que tienes que adivinar una palabra secreta de 5 letras. Si no conoces las reglas, son las siguientes:\n
@@ -97,6 +101,7 @@ Cuando escribas una palabra, sus letras serán mostradas en diferentes colores. 
 \x1b[92mVerde\x1b[0m: La letra está en la palabra secreta en esa posición
 \x1b[93mAmarillo\x1b[0m: La letra está en la palabra secreta, pero en otra posición
 \x1b[91mRojo\x1b[0m: La letra no está en la palabra secreta\n
+Puedes ejecutar el programa con la opción -h para obtener ayuda en algunas configuraciones.
 Puedes escribir \"h\" cuando estés ingresando una palabra para consultar comandos útiles\n";
 
 const COMMANDS_EN: &str = "\
@@ -140,6 +145,9 @@ const PROMPT_LANGUAGE_TITLE_ES: &str = "Selecciona idioma:";
 
 const PROMPT_PLAY_AGAIN_EN: &str = "Play again?";
 const PROMPT_PLAY_AGAIN_ES: &str = "¿Quires jugar otra vez?";
+
+const PROMPT_ASK_CHANGE_LANGUAGE_EN: &str = "Change language?";
+const PROMPT_ASK_CHANGE_LANGUAGE_ES: &str = "¿Cambiar idioma?";
 
 const NO_WORD_GUESSED_EN: &str = "No word has been guessed yet";
 const NO_WORD_GUESSED_ES: &str = "No se ha ingresado ninguna palabra todavía";
