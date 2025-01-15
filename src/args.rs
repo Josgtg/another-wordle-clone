@@ -2,7 +2,7 @@ use crate::language::Language;
 use clap::Parser;
 use std::str::FromStr;
 
-const DEFAULT_LANG: Language = Language::English;
+const DEFAULT_LANG: Language = Language::Spanish;
 const DEFAULT_SECRET: Option<Vec<char>> = None;
 const DEFAULT_TRIES: u8 = 5;
 
