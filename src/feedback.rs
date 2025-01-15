@@ -113,7 +113,7 @@ impl Feedback {
     pub fn get_abecedary(&self) -> String {
         let mut abecedary_vec: Vec<Char> =
             self.abecedary.clone().into_iter().map(|x| x.1).collect();
-        abecedary_vec.sort();
+        abecedary_vec.sort_by(|a, b| a.character.cmp(&b.character));
         abecedary_vec
             .into_iter()
             .fold(String::new(), |s, c| format!("{} {}", s, c.colored))

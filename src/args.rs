@@ -37,7 +37,7 @@ impl Args {
         };
 
         for c in secret_vec.iter() {
-            if !abecedary.contains(&c) {
+            if !abecedary.contains(c) {
                 eprintln!("Secret word has invalid characters: It won't be considered");
                 return DEFAULT_SECRET;
             }

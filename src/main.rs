@@ -22,9 +22,9 @@ fn get_language_appropriate<T>(language: &Language, english: T, spanish: T) -> T
 
 fn change_language(language: &Language) -> (LanguagePack, Dictionary) {
     (
-        get_language_appropriate(&language, LanguagePack::english(), LanguagePack::spanish()),
+        get_language_appropriate(language, LanguagePack::english(), LanguagePack::spanish()),
         get_language_appropriate(
-            &language,
+            language,
             Dictionary::new(include_bytes!("../media/dictionary.txt").to_vec()),
             Dictionary::new(include_bytes!("../media/diccionario.txt").to_vec()),
         ),

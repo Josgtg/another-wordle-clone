@@ -19,7 +19,7 @@ pub fn asciify(c: char) -> char {
 }
 
 pub fn asciify_str(s: &str) -> String {
-    s.to_owned().chars().map(|c| asciify(c)).collect()
+    s.to_owned().chars().map(asciify).collect()
 }
 
 /// Checks if a is similar to b
