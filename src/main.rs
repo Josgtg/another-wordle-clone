@@ -1,3 +1,4 @@
+use std::io::Write;
 use clap::Parser;
 
 mod args;
@@ -39,6 +40,14 @@ fn first_time_secret(args_secret: Option<Vec<char>>, dictionary: &mut Dictionary
     }
 }
 
+fn print_welcome(welcome: &str) {
+    print!("{}", welcome);
+    std::io::stdout().flush().expect("Could not flush stdout");
+    std::io::stdin().read_line(&mut String::new()).expect("Could not read line");
+    println!();
+}
+
+
 fn main() {
     let args = args::Args::parse();
 
@@ -49,7 +58,7 @@ fn main() {
     let mut first_time = true;
     loop {
         secret_word = if first_time {
-            println!("{}", language_pack.welcome);
+            print_welcome(language_pack.welcome);
             first_time = false;
             first_time_secret(args.get_secret(&dictionary.abecedary), &mut dictionary)
         } else {
