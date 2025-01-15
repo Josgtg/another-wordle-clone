@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::language::{Language, LanguagePack};
 use strum::IntoEnumIterator;
 
@@ -33,7 +35,7 @@ fn listbox(lang: &LanguagePack) -> Prompt<preset::listbox::render::Renderer> {
 }
 
 pub fn ask_language(lang: &LanguagePack) -> Language {
-    let lang = Language::try_from(listbox(lang).run().expect("error reading user input"))
+    let lang = Language::from_str(listbox(lang).run().expect("error reading user input").as_str())
         .expect("language is not valid");
     println!();
     lang

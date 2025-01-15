@@ -51,16 +51,16 @@ pub fn start(
     words: &HashSet<String>,
     secret_word: &[char],
     abecedary: &HashSet<char>,
+    max_tries: u8,
     lang: &LanguagePack,
 ) {
-    const MAX_TRIES: u8 = 6;
     let mut guess: String;
     let mut feedback = Feedback::new(secret_word, abecedary);
 
     let mut tries: u8 = 0;
     'outer: loop {
-        guess = read_input(lang);
-        if guess.trim().is_empty() {
+        guess = read_input(lang).trim().to_owned();
+        if guess.is_empty() {
             continue;
         }
 
@@ -79,7 +79,7 @@ pub fn start(
                 continue 'outer;
             }
             "t" => {
-                print_tries_left(lang, tries, MAX_TRIES);
+                print_tries_left(lang, tries, max_tries);
                 continue 'outer;
             }
             "h" => {
@@ -124,7 +124,7 @@ pub fn start(
             );
             println!("{}\n", lang.win.bold());
             return;
-        } else if tries == MAX_TRIES - 1 {
+        } else if tries == max_tries - 1 {
             print_feedback(&feedback, lang);
             println!(
                 "{}: \"{}\"\n",
@@ -137,6 +137,6 @@ pub fn start(
         print_feedback(&feedback, lang);
 
         tries += 1;
-        print_tries_left(lang, tries, MAX_TRIES);
+        print_tries_left(lang, tries, max_tries);
     }
 }

@@ -91,6 +91,7 @@ impl Feedback {
         for i in 0..self.guess.len() {
             if self.guess[i].is_incorrect() {
                 self.guess[i].set_status(Incorrect);
+                self.color_abecedary(self.guess[i].character, Incorrect);
             }
         }
     }

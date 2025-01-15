@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use strum_macros::EnumIter;
 
 #[derive(PartialEq, Eq, EnumIter)]
@@ -15,11 +17,11 @@ impl std::fmt::Display for Language {
     }
 }
 
-impl TryFrom<String> for Language {
-    type Error = ();
+impl FromStr for Language {
+    type Err = ();
 
-    fn try_from(value: String) -> Result<Self, Self::Error> {
-        match value.to_lowercase().as_str() {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
             "english" | "en" => Ok(Language::English),
             "español" | "es" => Ok(Language::Spanish),
             _ => Err(()),
@@ -40,9 +42,6 @@ pub struct LanguagePack<'a> {
     pub prompt_language_title: &'a str,
     pub prompt_play_again: &'a str,
     pub no_word_guessed: &'a str,
-    pub cli_language_help: &'a str,
-    pub cli_secret_help: &'a str,
-    pub cli_tries_help: &'a str,
 }
 
 impl LanguagePack<'static> {
@@ -60,9 +59,6 @@ impl LanguagePack<'static> {
             prompt_language_title: PROMPT_LANGUAGE_TITLE_EN,
             prompt_play_again: PROMPT_PLAY_AGAIN_EN,
             no_word_guessed: NO_WORD_GUESSED_EN,
-            cli_language_help: HELP_LANGUAGE_EN,
-            cli_secret_help: HELP_SECRET_EN,
-            cli_tries_help: HELP_TRIES_EN,
         }
     }
 
@@ -80,9 +76,6 @@ impl LanguagePack<'static> {
             prompt_language_title: PROMPT_LANGUAGE_TITLE_ES,
             prompt_play_again: PROMPT_PLAY_AGAIN_ES,
             no_word_guessed: NO_WORD_GUESSED_ES,
-            cli_language_help: HELP_LANGUAGE_ES,
-            cli_secret_help: HELP_SECRET_ES,
-            cli_tries_help: HELP_TRIES_ES,
         }
     }
 }
@@ -150,14 +143,3 @@ const PROMPT_PLAY_AGAIN_ES: &str = "¿Quires jugar otra vez?";
 
 const NO_WORD_GUESSED_EN: &str = "No word has been guessed yet";
 const NO_WORD_GUESSED_ES: &str = "No se ha ingresado ninguna palabra todavía";
-
-// CLI
-
-const HELP_LANGUAGE_EN: &str = "Change the default language. Valid options at the moment are \"en\" and \"es\"";
-const HELP_LANGUAGE_ES: &str = "Cambia el idioma por defecto. Los lenguajes válidos son \"en\" y \"es\"";
-
-const HELP_SECRET_EN: &str = "Set a secret word";
-const HELP_SECRET_ES: &str = "Asigna una palabra secreta";
-
-const HELP_TRIES_EN: &str = "Set max guesses a player has to guess the word";
-const HELP_TRIES_ES: &str = "Asigna cuántas oportunidades tiene un jugador para adivinar la palabra";

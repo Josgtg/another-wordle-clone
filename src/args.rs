@@ -1,60 +1,61 @@
+use std::str::FromStr;
 use clap::Parser;
+use crate::language::Language;
 
-use crate::language::LanguagePack;
-
-// FIXME: I'm really sure there are better ways to do this
-
-pub trait Args {
-    fn get_language(&self) -> String;
-    fn get_secret(&self) -> String;
-    fn get_tries(&self) -> u32;
-}
+const DEFAULT_LANG: Language = Language::English;
+const DEFAULT_SECRET: Option<Vec<char>> = None;
+const DEFAULT_TRIES: u8 = 5;
 
 #[derive(Debug, Parser)]
-pub struct ArgsEn {
-    #[arg(default_value="en", help=LanguagePack::english().cli_language_help)]
-    pub language: String,
-    #[arg(default_value="", help=LanguagePack::english().cli_secret_help)]
-    pub secret: String,
-    #[arg(default_value="5", help=LanguagePack::english().cli_tries_help)]
-    pub tries: u32
+pub struct Args {
+    /// Change the default language | Cambia el idioma por defecto ("en", "es")
+    #[arg(short='l', long="language")]
+    language: Option<String>,
+    /// Set a secret word | Asigna una palabra secreta
+    #[arg(short='s', long="secret")]
+    secret: Option<String>,
+    /// Set max guesses | Asigna los intentos máximos
+    #[arg(short='t', long="tries")]
+    tries: Option<u8>
 }
 
-#[derive(Debug, Parser)]
-pub struct ArgsEs {
-    #[arg(default_value="es", help=LanguagePack::spanish().cli_language_help)]
-    pub language: String,
-    #[arg(default_value="", help=LanguagePack::spanish().cli_secret_help)]
-    pub secret: String,
-    #[arg(default_value="5", help=LanguagePack::spanish().cli_tries_help)]
-    pub tries: u32
-}
-
-
-impl Args for ArgsEn {
-    fn get_language(&self) -> String {
-        self.language.clone()
+impl Args {
+    pub fn get_language(&self) -> Language {
+        if let Some(language_str) = &self.language {
+            if let Ok(language) = Language::from_str(language_str) {
+                return language;
+            }
+        }
+        DEFAULT_LANG
     }
 
-    fn get_secret(&self) -> String {
-        self.secret.clone()
+    pub fn get_secret(&self, abecedary: &std::collections::HashSet<char>) -> Option<Vec<char>> {
+        let secret_vec: Vec<char> =
+        if let Some(secret) = &self.secret {
+            secret.chars().collect()
+        } else {
+            return DEFAULT_SECRET;
+        };
+
+        for c in secret_vec.iter() {
+            if !abecedary.contains(&c) {
+                eprintln!("Secret word has invalid characters: It won't be considered");
+                return DEFAULT_SECRET;
+            }
+        }
+        if secret_vec.len() == 5 {
+            Some(secret_vec)
+        } else {
+            eprintln!("Secret word has invalid length. It won't be considered");
+            DEFAULT_SECRET
+        }
     }
 
-    fn get_tries(&self) -> u32 {
-        self.tries
-    }
-}
-
-impl Args for ArgsEs {
-    fn get_language(&self) -> String {
-        self.language.clone()
-    }
-
-    fn get_secret(&self) -> String {
-        self.secret.clone()
-    }
-
-    fn get_tries(&self) -> u32 {
-        self.tries
+    pub fn get_tries(&self) -> u8 {
+        if let Some(tries) = self.tries {
+            tries
+        } else {
+            DEFAULT_TRIES
+        }
     }
 }
