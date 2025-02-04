@@ -21,19 +21,25 @@ fn get_language_appropriate<T>(language: &Language, english: T, spanish: T) -> T
 }
 
 fn change_language(language: &Language) -> (LanguagePack, Dictionary) {
-    (
+    return (
         get_language_appropriate(language, LanguagePack::english(), LanguagePack::spanish()),
         get_language_appropriate(
             language,
-            Dictionary::new(include_bytes!("../media/dictionary.txt").to_vec()),
-            Dictionary::new(include_bytes!("../media/diccionario.txt").to_vec()),
+            Dictionary::new(
+                include_bytes!("../media/english/dictionary.txt"),
+                include_bytes!("../media/english/secret-words.txt")
+            ),
+            Dictionary::new(
+                include_bytes!("../media/spanish/diccionario.txt"),
+                include_bytes!("../media/spanish/palabras-secretas.txt")
+            ),
         ),
-    )
+    );
 }
 
 fn first_time_secret(args_secret: Option<Vec<char>>, dictionary: &mut Dictionary) -> Vec<char> {
     if let Some(secret) = args_secret {
-        dictionary.words.insert(secret.iter().collect());
+        dictionary.dictionary.insert(secret.iter().collect());
         secret
     } else {
         dictionary.get_secret_word()
@@ -60,13 +66,13 @@ fn main() {
         secret_word = if first_time {
             print_welcome(language_pack.welcome);
             first_time = false;
-            first_time_secret(args.get_secret(&dictionary.abecedary), &mut dictionary)
+            first_time_secret(args.get_secret(&mut dictionary.abecedary, &language_pack), &mut dictionary)
         } else {
             dictionary.get_secret_word()
         };
 
         game::start(
-            &dictionary.words,
+            &dictionary.dictionary,
             &secret_word,
             &dictionary.abecedary,
             args.get_tries(),
@@ -81,6 +87,7 @@ fn main() {
             (language_pack, dictionary) = change_language(&language);
             first_time = true;
         }
+
         println!();
     }
 }

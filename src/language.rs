@@ -35,6 +35,7 @@ pub struct LanguagePack<'a> {
     pub win: &'a str,
     pub loss: &'a str,
     pub tries_left: &'a str,
+    pub args_invalid_secret_word: &'a str,
     pub err_invalid_chars: &'a str,
     pub err_invalid_len: &'a str,
     pub err_invalid_word: &'a str,
@@ -53,6 +54,7 @@ impl LanguagePack<'static> {
             win: WIN_EN,
             loss: LOSS_EN,
             tries_left: TRIES_LEFT_EN,
+            args_invalid_secret_word: ARGS_INVALID_SECRET_WORD_EN,
             err_invalid_chars: ERR_INVALID_CHARS_EN,
             err_invalid_len: ERR_INVALID_LEN_EN,
             err_invalid_word: ERR_INVALID_WORD_EN,
@@ -71,6 +73,7 @@ impl LanguagePack<'static> {
             win: WIN_ES,
             loss: LOSS_ES,
             tries_left: TRIES_LEFT_ES,
+            args_invalid_secret_word: ARGS_INVALID_SECRET_WORD_ES,
             err_invalid_chars: ERR_INVALID_CHARS_ES,
             err_invalid_len: ERR_INVALID_LEN_ES,
             err_invalid_word: ERR_INVALID_WORD_ES,
@@ -129,6 +132,9 @@ const LOSS_ES: &str = "¡Perdiste! La palabra era";
 
 const TRIES_LEFT_EN: &str = "Tries left";
 const TRIES_LEFT_ES: &str = "Intentos restantes";
+
+const ARGS_INVALID_SECRET_WORD_EN: &str = "Secret word in args is invalid. A random secret word is going to be used instead";
+const ARGS_INVALID_SECRET_WORD_ES: &str = "La palabra secreta en los argumentos es inválida. Una palabra aleatoria será usada en su lugar";
 
 const ERR_INVALID_CHARS_EN: &str = "Guess contains invalid characters";
 const ERR_INVALID_CHARS_ES: &str = "La palabra contiene caracteres inválidos";

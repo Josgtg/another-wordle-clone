@@ -1,4 +1,4 @@
-use crate::language::Language;
+use crate::language::{Language, LanguagePack};
 use clap::Parser;
 use std::str::FromStr;
 
@@ -29,23 +29,20 @@ impl Args {
         DEFAULT_LANG
     }
 
-    pub fn get_secret(&self, abecedary: &std::collections::HashSet<char>) -> Option<Vec<char>> {
+    pub fn get_secret(&self, abecedary: &mut std::collections::HashSet<char>, lang: &LanguagePack) -> Option<Vec<char>> {
         let secret_vec: Vec<char> = if let Some(secret) = &self.secret {
             secret.chars().collect()
         } else {
             return DEFAULT_SECRET;
         };
 
-        for c in secret_vec.iter() {
-            if !abecedary.contains(c) {
-                eprintln!("Secret word has invalid characters: It won't be considered");
-                return DEFAULT_SECRET;
-            }
-        }
         if secret_vec.len() == 5 {
+            for c in secret_vec.iter() {
+                abecedary.insert(c.clone());
+            }
             Some(secret_vec)
         } else {
-            eprintln!("Secret word has invalid length. It won't be considered");
+            eprintln!("{}", lang.args_invalid_secret_word);
             DEFAULT_SECRET
         }
     }
