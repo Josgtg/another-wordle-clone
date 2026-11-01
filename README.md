@@ -5,19 +5,12 @@ colored feedback for every letter of each guess.
 
 ## Use the application
 
-Releases are published on the
-[releases page](https://github.com/Josgtg/another-wordle-clone/releases); the current
-one is [v0.1.0](https://github.com/Josgtg/another-wordle-clone/releases/tag/v0.1.0).
-
-Download
-[`another-wordle-clone-0.1.0-x86_64-unknown-linux-gnu.zip`](https://github.com/Josgtg/another-wordle-clone/releases/download/v0.1.0/another-wordle-clone-0.1.0-x86_64-unknown-linux-gnu.zip)
-for Linux x86_64. The archive unpacks to a directory holding the executable
-`another_wordle_clone`, this README, the license and a `SHA256SUMS` file:
+Download the latest release
+[here](https://github.com/Josgtg/another-wordle-clone/releases/latest). The Linux archive
+holds a single executable at its root, named `another_wordle_clone`:
 
 ```sh
 unzip another-wordle-clone-0.1.0-x86_64-unknown-linux-gnu.zip
-cd another-wordle-clone-0.1.0
-sha256sum -c SHA256SUMS
 ./another_wordle_clone
 ```
 
